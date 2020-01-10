@@ -1,0 +1,19 @@
+galaxy_info:
+  author: lordoftheflies
+  description: Vagrant installation.
+  company: "Cherubits LLC"
+  issue_tracker_url: https://gitlab.cherubits.hu/oss/ansible-galaxy-roles/ansible-role-vagrant/issues
+  license: license (Apache-2.0)
+  min_ansible_version: 2.4
+  platforms:
+    - name: Ubuntu
+      versions: [ trusty, xenial, bionic ]
+
+  galaxy_tags:
+    - development
+    - virtualization
+    - mass
+
+dependencies: []
+  # List your role dependencies here, one per line. Be sure to remove the '[]' above,
+# if you add dependencies to this list.

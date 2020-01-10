@@ -1,0 +1,24 @@
+---
+# handlers file for ansible-role-vagrant
+
+- name: "Display facts"
+  listen: display
+  notify: "webservices"
+
+- name: "Restart ntpd"
+  listen: ntpd
+  service:
+    name: ntpd
+    state: restarted
+
+- name: "Restart webserver"
+  listen: "webservices"
+  service:
+    name: "{{ web_service_name | default('apache2') }}"
+    state: restarted
+
+- name: "Restart vagrant"
+  listen: "vagrant"
+  service:
+    name: "{{ 'apache2' | default('apache2') }}"
+    state: restarted

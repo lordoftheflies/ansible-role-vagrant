@@ -1,0 +1,32 @@
+---
+# Uninstall script for MySQL
+# Based on https://tecadmin.net/remove-mysql-completely-from-linux-system/
+
+- name: "Uninstall packages"
+  become: yes
+  package:
+    name: "{{ mysql_packages }}"
+    state: absent
+  tags: mysql
+
+- name: "Delete database"
+  become: yes
+  file:
+    path: "{{ mysql_datadir }}"
+    state: absent
+  tags: mysql
+
+- name: "Delete configuration included directory"
+  become: yes
+  file:
+    path: "{{ __mysql_config_include_dir }}"
+    state: absent
+  tags: mysql
+
+
+- name: "Delete main configuration file."
+  become: yes
+  file:
+    path: "{{ __mysql_config_file }}"
+    state: absent
+  tags: mysql

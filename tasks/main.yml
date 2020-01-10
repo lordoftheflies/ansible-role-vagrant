@@ -1,0 +1,89 @@
+---
+# tasks file for ansible-role-vagrant
+- name: "Variable configuration."
+  include_tasks: variables.yml
+  tags: [ "variables" ]
+
+- name: "Uninstall Vagrant"
+  include_tasks: uninstall.yml
+  when: state|default('present') == "absent"
+  tags: [ "uninstall" ]
+
+- name: "Setup/install Vagrant."
+  include_tasks: install-RedHat.yml
+  when: ansible_os_family == 'RedHat' and state|default('present') == "present"
+  tags: [ "install" , "RedHat"]
+
+- name: "Setup/install Vagrant."
+  include_tasks: install-Debian.yml
+  when: ansible_os_family == 'Debian' and state|default('present') == "present"
+  tags: [ "debian" , "Debian"]
+
+- name: "Setup/install Vagrant."
+  include_tasks: install-Archlinux.yml
+  when: ansible_os_family == 'Archlinux' and state|default('present') == "present"
+  tags: [ "vagrant", tags: [ "vagrant" ] ]
+
+- name: "Check if Vagrant packages were installed."
+  set_fact:
+    install_packages: "{{ (install_packages_RedHat is defined and install_packages_RedHat.changed)
+      or (install_packages_Debian is defined and install_packages_Debian.changed)
+      or (install_packages_Archlinux is defined and install_packages_Archlinux.changed) }}"
+
+- name: "Installing Vagrant plugin for Vagrant"
+  include_tasks: install.yml
+  when: state|default('present') == "present"
+  tags: [ "vagrant" ]
+#- name: "Create databases"
+#  include_tasks: databases.yml
+#  when: state|default('present') == "present"
+
+- name: "Create users"
+  include_tasks: users.yml
+  when: state|default('present') == "present"
+  tags: [ "vagrant" ]
+
+- name: "Debug"
+  debug: var=ansible_facts
+
+- name: "Configure Vagrant."
+  become: yes
+  include_tasks: configure.yml
+  when: state|default('present') == "present"
+
+- name: "Load vhost kernel module"
+  when: state|default('present') == "present"
+  tags: [ "vagrant" ]
+  become: yes
+  modprobe:
+    name: vhost_net
+    state: present
+
+- name: "Ensure ntpd is up-to-date."
+  when: state|default('present') == "present"
+  tags: [ "vagrant" ]
+  package:
+    name: ntp
+    state: present
+  notify:
+    - ntpd
+
+- name: "Install Vagrant"
+  when: state|default('present') == "present"
+  tags: [ "vagrant" ]
+  package:
+    name: vagrant
+    state: present
+  notify:
+    - vagrant
+
+- name: "Create a directory if it does not exist"
+  when: state|default('present') == "present"
+  tags: [ "vagrant" ]
+  file:
+    path: boxes
+    state: directory
+    mode: '0755'
+
+- name: "Start Vagrant"
+

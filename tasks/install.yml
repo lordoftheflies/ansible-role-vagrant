@@ -1,0 +1,23 @@
+---
+- name: "Install Vagrant plugins"
+  command: vagrant plugin install vagrant-libvirt
+  register: vagrant_libvirt
+
+- name: "Add repository"
+  apt_repository:
+    repo: "deb https://vagrant-deb.linestarve.com/ any main"
+    state: present
+  filename: vagrant-deb
+
+- name: "Add an Apt signing key, will not download if present"
+  apt_key:
+    id: AD319E0F7CFFA38B4D9F6E55CE3F3DE92099F7A4
+    url: keyserver.ubuntu.com
+    state: present
+
+- name: "Install packages"
+  become: yes
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ role_packages }}"
