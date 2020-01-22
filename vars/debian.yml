@@ -1,0 +1,21 @@
+---
+# Debian specific properties
+debian:
+  vagrant_download_path: "{{ temporal_directory }}/vagrant_{{ vagrant_version }}.deb"
+  syslog_tag: vagrant
+  install_packages:
+    - apparmor-utils
+    - libguestfs-tools
+    - libvirt-bin
+    - libvirt-dev
+    - qemu
+    - qemu-kvm
+    - qemu-utils
+    - ruby-all-dev
+    - virt-top
+    - virtinst
+    - bridge-utils
+  log:
+    file_group: adm
+    stdout: "{{ log_directory }}/output.log"
+    error: "{{ log_directory }}/error.log"

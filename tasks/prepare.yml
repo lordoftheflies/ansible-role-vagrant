@@ -1,0 +1,5 @@
+---
+- name: "Show all the hosts in the inventory"
+  loop: "{{ groups['all'] }}"
+  debug:
+    msg: "{{ item }}"

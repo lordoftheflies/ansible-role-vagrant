@@ -1,0 +1,47 @@
+---
+
+- name: "Ensure users are present"
+  user:
+    name: "{{ item.name }}"
+    groups: "{{artifact.group}},{{webgroup}},{{superusers}}"
+    shell: /bin/bash
+    password: "{{ 'secretpassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
+#    priv: "{{ item.priv | default('*.*:USAGE') }}"
+    state: "{{ item.state | default('present') }}"
+#    append_privs: "{{ item.append_privs | default('no') }}"
+#    encrypted: "{{ item.encrypted | default('no') }}"
+  with_items: "{{ users }}"
+
+- name: "E-mail notification for newbies"
+  mail:
+    host: "{{ mail.host }}"
+    port: "{{ mail.port | 587 }}"
+    subject: "Final steps of registration on {{ organization }} {{ artifact.display }}!"
+    body: "{{ lookup('template', 'templates/welcome_mail_body.j2') }}"
+    from: "{{ artifact.maintainer.name }} <{{ artifact.maintainer.email }}>"
+    to: "{{ item.name }} <{{ item.email }}>"
+    cc: "{{ supervisors[artifact.name].name }} <{{ supervisors[artifact.name].email }}>"
+    attach:
+      - "{{ ENV['ANSIBLE_LOG_PATH'] }}"
+    headers:
+      - "Reply-To={{ hostvars[inventory_hostname].webmaster.email }}"
+      - "X-Special='Support forum for {{ artifact.display }}'"
+    charset: utf-8
+  delegate_to: localhost
+
+- name: "Email report to maintainer."
+  mail:
+    host: "{{ mail.host }}"
+    port: "{{ mail.port }}"
+    subject: "System {{ ansible_hostname }} has been successfully provisioned."
+    body: "{{ lookup('template', 'templates/delivery_mail_body.j2') }}"
+    from: "{{ artifact.maintainer.name }} <{{ artifact.maintainer.email }}>"
+    to: "{{ item.name }} <{{ item.email }}>"
+    cc: "{{ supervisors[artifact.name].name }} <{{ supervisors[artifact.name].email }}>"
+    attach:
+      - "{{ ENV['ANSIBLE_LOG_PATH'] }}"
+    headers:
+      - "Reply-To={{ hostvars[inventory_hostname].webmaster.email }}"
+      - "X-Special='Support forum for {{ artifact.display }}'"
+    charset: utf-8
+  delegate_to: localhost

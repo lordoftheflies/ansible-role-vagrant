@@ -1,34 +1,36 @@
 ---
-# Variable configuration.
+
 - name: "Include OS-specific variables."
   include_vars: "{{ item }}"
+  tags: [ "vagrant", "variables" ]
   with_first_found:
-    - files:
-        - "vars/{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
-        - "vars/{{ ansible_os_family }}.yml"
-      skip: true
+    - skip: true
+      files:
+        - "vars/{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+        - "vars/{{ ansible_os_family | lower }}.yml"
+#      skip: true
 
 - name: "Define install_packages."
+  when: install_packages is not defined
   set_fact:
     install_packages: "{{ install_packages | list }}"
-  when: install_packages is not defined
 
 - name: "Define vagrant_daemon."
   set_fact:
     vagrant_daemon: "{{ install_daemon }}"
   when: vagrant_daemon is not defined
 
-- name: "Define slow_query_log_file."
-  set_fact:
-    slow_query_log_file: "{{ slow_query_log_file }}"
-  when: slow_query_log_file is not defined
+#- name: "Define slow_query_log_file."
+#  set_fact:
+#    slow_query_log_file: "{{ slow_query_log_file }}"
+#  when: slow_query_log_file is not defined
 
 - name: "Define vagrant_log_error."
   set_fact:
-    mysql_log_error: "{{ vagrant_log_error }}"
+    vagrant_log_error: "{{ log_error }}"
   when: vagrant_log_error is not defined
 
-- name: Define vagrant_syslog_tag.
+- name: "Define Vagrant syslog tag: {{  }}"
   set_fact:
     vagrant_syslog_tag: "{{ __mysql_syslog_tag }}"
   when: vagrant_syslog_tag is not defined

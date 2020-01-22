@@ -1,27 +1,27 @@
 ---
-# Uninstall script for MySQL
+# Uninstall script for Vagrant
 # Based on https://tecadmin.net/remove-mysql-completely-from-linux-system/
 
 - name: "Uninstall packages"
   become: yes
+  tags: vagrant
   package:
-    name: "{{ mysql_packages }}"
+    name: "{{ install_packages }}"
     state: absent
-  tags: mysql
 
-- name: "Delete database"
+- name: "Delete data directory"
   become: yes
+  tags: vagrant
   file:
-    path: "{{ mysql_datadir }}"
+    path: "{{ vagrant_data_dir }}"
     state: absent
-  tags: mysql
 
 - name: "Delete configuration included directory"
   become: yes
+  tags: vagrant
   file:
-    path: "{{ __mysql_config_include_dir }}"
+    path: "{{ vagrant_config_include_dir }}"
     state: absent
-  tags: mysql
 
 
 - name: "Delete main configuration file."

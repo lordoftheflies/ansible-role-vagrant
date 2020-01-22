@@ -3,21 +3,27 @@ stages:
   - prepare
   - lint
   - test
+  - secure
 
 prepare:
   stage: prepare
-  become: true
+
   before_script:
     - apt install python-pip3
   script:
     - pip install ansible
   after_script:
     - ansible --version
+
 test:
   stage: test
+  variables:
+    node_app_dir: /var/local/my_node_app
+  environment:
+    NVM_DIR: /var/local/nvm
+    PATH: /var/local/nvm/versions/node/v4.2.1/bin:{{ ansible_env.PATH }}
   script:
-    # Check the role/playbook's syntax.
-    - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+    - ansible-playbook tests/test.yml -i tests/e2e.ini --syntax-check
 
 ansible_linting:
   variables:
@@ -25,7 +31,6 @@ ansible_linting:
   stage: lint
   script:
     - ansible-lint *.yml
-
 
 ansible-syntax:
   stage: validate
@@ -40,7 +45,6 @@ ansible-syntax:
     - ansible-galaxy install -r tests/requirements.yml
     - ln -s $CI_PROJECT_DIR ~/.ansible/roles/role_under_test
     - ansible-playbook tests/test.yml --syntax-check
-    - ansible-playbook tests/test_networktopology.yml --syntax-check
 
 ansible-lint:
   stage: validate
@@ -55,3 +59,10 @@ ansible-lint:
     - ln -s $CI_PROJECT_DIR ~/.ansible/roles/ansible_role_vagrant
     - ansible-lint tests/test.yml
   allow_failure: true
+
+encrypt:
+  stage: secure
+  before_script:
+    - ansible-vault create --verbose --ask-vault-pass .ansible.vlt
+  script:
+    - ansible-vault encrypt_string --ask-vault-pass --vault-id dev@.ansible.vlt --name ''

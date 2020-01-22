@@ -1,0 +1,13 @@
+---
+
+- name: "Install packages"
+  become: yes
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ install_packages }}"
+
+- name: "Install Vagrant plugins"
+  command: "vagrant plugin install {{ item }}"
+  register: "vagrant_libvirt"
+  with_items: "{{ vagrant_plugins }}"

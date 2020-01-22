@@ -1,54 +1,74 @@
 ---
-# tasks file for ansible-role-vagrant
+
+- name: "Prepare"
+  tags: [ "vagrant", "prepare" ]
+  include_task: prepare.yml
+
 - name: "Variable configuration."
-  include_tasks: variables.yml
-  tags: [ "variables" ]
+  tags: [ "vagrant", "variables" ]
+  include_task: variables.yml
 
 - name: "Uninstall Vagrant"
+  tags: [ "vagrant", "uninstall" ]
   include_tasks: uninstall.yml
   when: state|default('present') == "absent"
-  tags: [ "uninstall" ]
 
 - name: "Setup/install Vagrant."
-  include_tasks: install-RedHat.yml
+  tags: [ "vagrant", "install" , "redhat"]
+  include_tasks: install-rhel.yml
   when: ansible_os_family == 'RedHat' and state|default('present') == "present"
-  tags: [ "install" , "RedHat"]
 
 - name: "Setup/install Vagrant."
-  include_tasks: install-Debian.yml
+  tags: [ "vagrant", "install" , "debian"]
+  include_tasks: install-debian.yml
   when: ansible_os_family == 'Debian' and state|default('present') == "present"
-  tags: [ "debian" , "Debian"]
 
 - name: "Setup/install Vagrant."
-  include_tasks: install-Archlinux.yml
+  tags: [ "vagrant", "install", "archlinux" ]
+  include_tasks: install-archlinux.yml
   when: ansible_os_family == 'Archlinux' and state|default('present') == "present"
-  tags: [ "vagrant", tags: [ "vagrant" ] ]
 
-- name: "Check if Vagrant packages were installed."
+- name: "Check if Vagrant packages were installed"
+  tags: [ "vagrant", "install", "{{ ansible_os_family | lower }}" ]
   set_fact:
-    install_packages: "{{ (install_packages_RedHat is defined and install_packages_RedHat.changed)
-      or (install_packages_Debian is defined and install_packages_Debian.changed)
-      or (install_packages_Archlinux is defined and install_packages_Archlinux.changed) }}"
+    install_packages: "{{
+      (rhel.install_packages is defined and rhel.install_packages.changed)
+      or (debian.install_packages is defined and debian.install_packages.changed)
+      or (archlinux.install_packages is defined and archlinux.install_packages.changed)
+    }}"
 
-- name: "Installing Vagrant plugin for Vagrant"
-  include_tasks: install.yml
+- name: "Installing Linux packages"
+  tags: [ "vagrant", "install", "{{ ansible_os_family | lower }}" ]
   when: state|default('present') == "present"
-  tags: [ "vagrant" ]
-#- name: "Create databases"
-#  include_tasks: databases.yml
-#  when: state|default('present') == "present"
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ install_packages }}"
+
+- name: "Installing Python modules"
+  tags: [ "vagrant", "install", "{{ ansible_os_family | lower }}", "python" ]
+  when: state|default('present') == "present"
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ python_modules }}"
 
 - name: "Create users"
   include_tasks: users.yml
   when: state|default('present') == "present"
-  tags: [ "vagrant" ]
+  tags: [ "vagrant", "{{ ansible_os_family | lower }}", "users" ]
 
-- name: "Debug"
-  debug: var=ansible_facts
-
-- name: "Configure Vagrant."
+- name: "Configure Vagrant"
   include_tasks: configure.yml
   when: state|default('present') == "present"
+  tags: [ "vagrant", "{{ ansible_os_family | lower }}", "configure" ]
+
+
+- name: "Installing Vagrant plugins for Vagrant"
+  include_tasks: setup-plugins.yml
+  when: state|default('present') == "present"
+  tags: [ "vagrant", "install", "plugins" ]
+
 
 - name: "Load vhost kernel module"
   when: state|default('present') == "present"
@@ -85,4 +105,4 @@
     mode: '0755'
 
 - name: "Start Vagrant"
-
+  command: vagrant up

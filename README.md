@@ -69,6 +69,15 @@ Specify virtualbox installation (For Debian)
       vagrant_virtualbox_ver: "virtualbox-5.1"
 ```
 
+## Secure configuration, with `ansible-vault`
+
+Fist, need to create a password file for encrypted values:
+
+```bash
+ansible-vault create --ask-vault-password --prompt --name 'the_secret'  '.ansible.vault' 
+
+```
+
 ## License
 
 Apache-2.0
