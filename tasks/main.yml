@@ -47,7 +47,6 @@
   debug: var=ansible_facts
 
 - name: "Configure Vagrant."
-  become: yes
   include_tasks: configure.yml
   when: state|default('present') == "present"
 

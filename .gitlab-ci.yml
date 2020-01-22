@@ -1,6 +1,7 @@
 ---
 stages:
   - prepare
+  - lint
   - test
 
 prepare:
@@ -17,3 +18,40 @@ test:
   script:
     # Check the role/playbook's syntax.
     - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+
+ansible_linting:
+  variables:
+    GIT_SSL_NO_VERIFY: "True"
+  stage: lint
+  script:
+    - ansible-lint *.yml
+
+
+ansible-syntax:
+  stage: validate
+  tags:
+    - docker
+  image:
+    name: registry.cherubits.hu/hispanico/docker-terraform-ansible:latest
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - ansible-galaxy install -r tests/requirements.yml
+    - ln -s $CI_PROJECT_DIR ~/.ansible/roles/role_under_test
+    - ansible-playbook tests/test.yml --syntax-check
+    - ansible-playbook tests/test_networktopology.yml --syntax-check
+
+ansible-lint:
+  stage: validate
+  tags:
+    - docker
+  image:
+    name: registry.gitlab.com/hispanico/docker-terraform-ansible:latest
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - ln -s $CI_PROJECT_DIR ~/.ansible/roles/ansible_role_vagrant
+    - ansible-lint tests/test.yml
+  allow_failure: true
