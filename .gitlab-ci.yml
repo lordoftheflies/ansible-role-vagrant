@@ -1,0 +1,19 @@
+---
+stages:
+  - prepare
+  - test
+
+prepare:
+  stage: prepare
+  become: true
+  before_script:
+    - apt install python-pip3
+  script:
+    - pip install ansible
+  after_script:
+    - ansible --version
+test:
+  stage: test
+  script:
+    # Check the role/playbook's syntax.
+    - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
