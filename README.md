@@ -6,7 +6,11 @@ description: Vagrant manager role.
 
 # Ansible Role: Vagrant
 
-A brief description of the role goes here.
+Management role for Vagrant.
+
+### Vagrant
+
+Vagrant is a tool for building and managing virtual machine environments in a single workflow. With an easy-to-use workflow and focus on automation, Vagrant lowers development environment setup time, increases production parity, and makes the "works on my machine" excuse a relic of the past.
 
 ## Requirements
 
@@ -27,13 +31,13 @@ Including an example of how to use your role (for instance, with variables passe
 ```yml
     - hosts: servers
       roles:
-         - { role: lordoftheflies.ansibale-role-vagrant, x: 42 }
+         - { role: lordoftheflies.ansibale_role_vagrant, x: 42 }
 ```
 
 Local installation : (ansible need to be installed)
 
 ```bash
-git clone https://github.com/jdauphant/ansible-role-vagrant.git
+git clone git@gitlab.cherubits.hu:oss/ansible-galaxy-roles/ansible-role-vagrant.git
 ansible-playbook -i "localhost," --ask-sudo-pass --connection=local installation.yml
 ```
 
