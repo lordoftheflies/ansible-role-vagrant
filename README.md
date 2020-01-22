@@ -1,7 +1,8 @@
 ---
+title: 'ansible-role-vagrant'
+description: 'Vagrant manager role.'
 feedback: true
 comments: true
-description: Vagrant manager role.
 ---
 
 # Ansible Role: Vagrant
