@@ -1,27 +1,32 @@
 ---
 # defaults file for ansible-role-vagrant
-temporal_directory: "/var/tmp/vagrant"
-log_directory: "/var/log/vagrant"
-config_directory: "/etc/vagrant"
-config_include_directory: "{{ config_directory }}/conf.d"
-working_directory: "/var/local/vagrant"
-vagrant_version: "1.9.1"
-vagrant_config_file: "{{ config_directory }}/vagrant.conf"
-vagrant_daemon: vagrant
-vagrant_virtualbox_install: True
-vagrant_virtualbox_ver: "virtualbox"
+
+virtualbox:
+  install: True
+  ver: "virtualbox"
 
 organization: "Cherubits"
-
+tmpdir: "/var/tmp/{{ artifact.name }}"
+workdir: "/var/local/{{ artifact.name }}"
 
 artifact:
+  display: "Vagrant"
+  version: "1.9.1"
   name: vagrant
   owner: "{{ artifact.name }}"
   group: "{{ artifact.owner }}"
   maintainer: "{{ artifact.maintainer }}"
   daemon: "{{ artifact.name }}"
-  display: "Vagrant"
-
 mail:
   host: smtp.gmail.com
   port: 587
+
+log:
+  - directory: "/var/log/{{ artifact.name }}"
+    output: "{{ log.directory }}/ouput.log"
+    error: "{{ log.directory }}/error.log"
+config:
+  directory: "/etc/{{ artifact.name }}"
+  included: "{{ config_directory }}/conf.d"
+  file: "{{ config_directory }}/vagrant.conf"
+

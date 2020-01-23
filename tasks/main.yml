@@ -1,41 +1,55 @@
 ---
 
 - name: "Prepare"
-  tags: [ "vagrant", "prepare" ]
-  include_task: prepare.yml
+  block:
+    - name: "Prepare for service update!"
+      tags: [ "vagrant", "prepare" ]
+      include_task: prepare.yml
+    - name: "Variable configuration."
+      tags: [ "vagrant", "variables" ]
+      include_task: variables.yml
+  rescue:
+    - debug: msg='I caught an error'
+    - name: i force a failure in middle of recovery! >:-)
+      command: /bin/false
+    - debug: msg='I also never execute :-('
+  always:
+    - debug: msg="This always executes"
 
-- name: "Variable configuration."
-  tags: [ "vagrant", "variables" ]
-  include_task: variables.yml
+- name: "Build"
+  block:
+    - name: "Uninstall Vagrant"
+      tags: [ "vagrant", "uninstall" ]
+      include_tasks: uninstall.yml
+      when: state|default('present') == "absent"
+    - debug: msg='Vagrant removed successfully.'
 
-- name: "Uninstall Vagrant"
-  tags: [ "vagrant", "uninstall" ]
-  include_tasks: uninstall.yml
-  when: state|default('present') == "absent"
+    - name: "Setup/install Vagrant."
+      tags: [ "vagrant", "install" , "redhat"]
+      include_tasks: install-rhel.yml
+      when: ansible_os_family == 'RedHat' and state|default('present') == "present"
 
-- name: "Setup/install Vagrant."
-  tags: [ "vagrant", "install" , "redhat"]
-  include_tasks: install-rhel.yml
-  when: ansible_os_family == 'RedHat' and state|default('present') == "present"
+    - name: "Setup/install Vagrant."
+      tags: [ "vagrant", "install" , "debian"]
+      include_tasks: install-debian.yml
+      when: ansible_os_family == 'Debian' and state|default('present') == "present"
 
-- name: "Setup/install Vagrant."
-  tags: [ "vagrant", "install" , "debian"]
-  include_tasks: install-debian.yml
-  when: ansible_os_family == 'Debian' and state|default('present') == "present"
+    - name: "Setup/install Vagrant."
+      tags: [ "vagrant", "install", "archlinux" ]
+      include_tasks: install-archlinux.yml
+      when: ansible_os_family == 'Archlinux' and state|default('present') == "present"
+  rescue:
+    - debug: msg='I caught an error'
+  always:
+    - name: "Check if Vagrant packages were installed"
+      tags: [ "vagrant", "install", "{{ ansible_os_family | lower }}" ]
+      set_fact:
+        install_packages: "{{
+          (rhel.install_packages is defined and rhel.install_packages.changed)
+          or (debian.install_packages is defined and debian.install_packages.changed)
+          or (archlinux.install_packages is defined and archlinux.install_packages.changed)
+        }}"
 
-- name: "Setup/install Vagrant."
-  tags: [ "vagrant", "install", "archlinux" ]
-  include_tasks: install-archlinux.yml
-  when: ansible_os_family == 'Archlinux' and state|default('present') == "present"
-
-- name: "Check if Vagrant packages were installed"
-  tags: [ "vagrant", "install", "{{ ansible_os_family | lower }}" ]
-  set_fact:
-    install_packages: "{{
-      (rhel.install_packages is defined and rhel.install_packages.changed)
-      or (debian.install_packages is defined and debian.install_packages.changed)
-      or (archlinux.install_packages is defined and archlinux.install_packages.changed)
-    }}"
 
 - name: "Installing Linux packages"
   tags: [ "vagrant", "install", "{{ ansible_os_family | lower }}" ]
