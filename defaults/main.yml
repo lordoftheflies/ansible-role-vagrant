@@ -8,6 +8,8 @@ virtualbox:
 organization: "Cherubits"
 tmpdir: "/var/tmp/{{ artifact.name }}"
 workdir: "/var/local/{{ artifact.name }}"
+webgroup: www-data
+containergroup: docker
 
 artifact:
   display: "Vagrant"
