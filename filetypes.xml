@@ -1,0 +1,29 @@
+<application>
+  <component name="FileTypeManager" version="17">
+    <ignoreFiles list="*$py.class;*.hprof;*.pyc;*.pyo;*.rbc;*.yarb;*~;.DS_Store;.git;.hg;.svn;CVS;__pycache__;_svn;vssver.scc;vssver2.scc;" />
+    <extensionMap>
+      <mapping pattern="hosts" type="Ini" />
+      <mapping ext="cluster" type="Ini" />
+      <mapping ext="replica" type="Ini" />
+      <mapping pattern=".git_keep" type="PLAIN_TEXT" />
+      <mapping ext="j2" type="PLAIN_TEXT" />
+      <mapping ext="pem" type="PLAIN_TEXT" />
+      <mapping pattern="main.yml.j2" type="YAML" />
+      <mapping pattern="site.yml" type="YAML_EX" />
+      <mapping pattern="main.yml" type="YAML_EX" />
+      <mapping pattern="users.yml" type="YAML_EX" />
+      <mapping pattern="debian.yml" type="YAML_EX" />
+      <mapping pattern="setup-plugins.yml" type="YAML_EX" />
+      <mapping pattern="rhel.yml" type="YAML_EX" />
+      <mapping pattern="variables.yml" type="YAML_EX" />
+      <mapping pattern="prepare.yml" type="YAML_EX" />
+      <mapping pattern="install-debian.yml" type="YAML_EX" />
+      <mapping pattern="install-archlinux.yml" type="YAML_EX" />
+      <mapping pattern="uninstall.yml" type="YAML_EX" />
+      <mapping pattern="test.yml" type="YAML_EX" />
+      <mapping pattern="install-redhat.yml" type="YAML_EX" />
+      <mapping pattern="configure.yml" type="YAML_EX" />
+      <mapping pattern="archlinux,yml" type="YAML_EX" />
+    </extensionMap>
+  </component>
+</application>
