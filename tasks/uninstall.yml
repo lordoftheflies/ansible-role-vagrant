@@ -23,10 +23,10 @@
     path: "{{ vagrant_config_include_dir }}"
     state: absent
 
-
-- name: "Delete main configuration file."
-  become: yes
-  file:
-    path: "{{ __mysql_config_file }}"
-    state: absent
-  tags: mysql
+#
+#- name: "Delete main configuration file."
+#  become: yes
+#  file:
+#    path: "{{ __mysql_config_file }}"
+#    state: absent
+#  tags: mysql

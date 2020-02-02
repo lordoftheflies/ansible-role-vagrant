@@ -49,12 +49,12 @@
 #  set_fact:
 #    config_include_dir: "{{ vagrant_config_include_dir }}"
 #  when: config_include_dir is not defined
-
+#
 #- name: Define transient_socket.
 #  set_fact:
 #    vagrant_socket: "{{ __mysql_socket }}"
 #  when: mysql_socket is not defined
-
+#
 #- name: Define mysql_supports_innodb_large_prefix.
 #  set_fact:
 #    mysql_supports_innodb_large_prefix: "{{ __mysql_supports_innodb_large_prefix }}"

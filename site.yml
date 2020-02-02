@@ -1,0 +1,5 @@
+---
+- name: "Common role ..."
+  hosts: all
+  tasks:
+    - include_tasks: tasks/main.yml

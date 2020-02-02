@@ -4,10 +4,10 @@
   block:
     - name: "Prepare for service update!"
       tags: [ "vagrant", "prepare" ]
-      include_task: prepare.yml
+      include_tasks: prepare.yml
     - name: "Variable configuration."
       tags: [ "vagrant", "variables" ]
-      include_task: variables.yml
+      include_tasks: variables.yml
   rescue:
     - debug: msg='I caught an error'
     - name: i force a failure in middle of recovery! >:-)
@@ -23,18 +23,19 @@
       include_tasks: uninstall.yml
       when: state|default('present') == "absent"
     - debug: msg='Vagrant removed successfully.'
+#      gather_facts: true
 
-    - name: "Setup/install Vagrant."
+    - name: "Setup/install rf Vagrant."
       tags: [ "vagrant", "install" , "redhat"]
       include_tasks: install-rhel.yml
-      when: ansible_os_family == 'RedHat' and state|default('present') == "present"
+      when: ansible_os_family == "RedHat" and state|default("present") == "present"
 
-    - name: "Setup/install Vagrant."
+    - name: "Setup/install d Vagrant."
       tags: [ "vagrant", "install" , "debian"]
       include_tasks: install-debian.yml
       when: ansible_os_family == 'Debian' and state|default('present') == "present"
 
-    - name: "Setup/install Vagrant."
+    - name: "Setup/install u Vagrant."
       tags: [ "vagrant", "install", "archlinux" ]
       include_tasks: install-archlinux.yml
       when: ansible_os_family == 'Archlinux' and state|default('present') == "present"
@@ -42,7 +43,7 @@
     - debug: msg='I caught an error'
   always:
     - name: "Check if Vagrant packages were installed"
-      tags: [ "vagrant", "install", "{{ ansible_os_family | lower }}" ]
+      tags: [ "vagrant", "install" ]
       set_fact:
         install_packages: "{{
           (rhel.install_packages is defined and rhel.install_packages.changed)
@@ -52,7 +53,7 @@
 
 
 - name: "Installing Linux packages"
-  tags: [ "vagrant", "install", "{{ ansible_os_family | lower }}" ]
+#  tags: [ "vagrant", "install", "{{ ansible_os_family | lower }}" ]
   when: state|default('present') == "present"
   package:
     name: "{{ item }}"

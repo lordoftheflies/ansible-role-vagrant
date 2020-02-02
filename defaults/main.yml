@@ -14,7 +14,7 @@ containergroup: docker
 artifact:
   display: "Vagrant"
   version: "1.9.1"
-  name: vagrant
+  name: "vagrant"
   owner: "{{ artifact.name }}"
   group: "{{ artifact.owner }}"
   maintainer: "{{ artifact.maintainer }}"
