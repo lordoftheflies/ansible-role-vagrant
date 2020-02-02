@@ -48,6 +48,7 @@ ansible-syntax:
 
 ansible-lint:
   stage: validate
+
   tags:
     - docker
   image:
