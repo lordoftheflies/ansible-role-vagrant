@@ -1,1 +1,20 @@
 ---
+
+- name: "Add an Apt signing key, will not download if present"
+  become: yes
+  apt_key:
+    id: D2BABDFD63EA9ECAB4E09C7228A873EA3C7C705F
+    url: https://vagrant-deb.linestarve.com/vagrant-deb.asc
+    state: present
+
+- name: "Add repository"
+  become: yes
+  apt_repository:
+    filename: vagrant-deb
+    repo: "deb https://vagrant-deb.linestarve.com/ any main"
+    state: present
+
+- name: "Update"
+  become: yes
+  apt:
+    update_cache: yes

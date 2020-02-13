@@ -1,14 +1,2 @@
 ---
-- name: "Add repository"
-  filename: vagrant-deb
-  become: yes
-  apt_repository:
-    repo: "deb https://vagrant-deb.linestarve.com/ any main"
-    state: present
-
-- name: "Add an Apt signing key, will not download if present"
-  become: yes
-  apt_key:
-    id: AD319E0F7CFFA38B4D9F6E55CE3F3DE92099F7A4
-    url: keyserver.ubuntu.com
-    state: present
+- debug: msg="Arch-Linux nt supported"

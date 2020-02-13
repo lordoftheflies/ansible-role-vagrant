@@ -3,8 +3,9 @@
 archlinux:
   vagrant_download_path: "{{ temporal_directory }}/vagrant_{{ vagrant_version }}.deb"
   syslog_tag: vagrant
-  install_packages: []
   log:
     file_group: adm
     stdout: "{{ log_directory }}/output.log"
     error: "{{ log_directory }}/error.log"
+
+install_packages: []

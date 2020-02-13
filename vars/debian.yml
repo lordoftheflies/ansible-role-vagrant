@@ -1,12 +1,10 @@
 ---
 # Debian specific properties
-debian:
-  vagrant_download_path: "{{ temporal_directory }}/vagrant_{{ vagrant_version }}.deb"
+vagrant_role:
   syslog_tag: vagrant
   install_packages:
     - apparmor-utils
     - libguestfs-tools
-    - libvirt-bin
     - libvirt-dev
     - qemu
     - qemu-kvm
@@ -15,7 +13,16 @@ debian:
     - virt-top
     - virtinst
     - bridge-utils
+  install_daemon: vagrantd
+  pidfile: vagrant.pid
+  config_file: Vagrantfile
   log:
     file_group: adm
-    stdout: "{{ log_directory }}/output.log"
-    error: "{{ log_directory }}/error.log"
+    stdout: "/var/log/vagrant/output.log"
+    error: "/var/log/vagrant/error.log"
+  vagrant_plugins:
+#    - pkg-config
+    - vagrant-mutate
+    - vagrant-disksize
+    - vai
+    - vagrant-libvirt

@@ -4,20 +4,19 @@
   include_vars: "{{ item }}"
   tags: [ "vagrant", "variables" ]
   with_first_found:
-    - skip: true
-      files:
+    - files:
         - "vars/{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
         - "vars/{{ ansible_os_family | lower }}.yml"
-#      skip: true
+      skip: true
 
 - name: "Define install_packages."
-  when: install_packages is not defined
+  when: vagrant_role_install_packages is not defined
   set_fact:
-    install_packages: "{{ install_packages | list }}"
+    vagrant_role_install_packages: "{{ vagrant_role.install_packages | list }}"
 
 - name: "Define vagrant_daemon."
   set_fact:
-    vagrant_daemon: "{{ install_daemon }}"
+    vagrant_daemon: "{{ vagrant_role.install_daemon }}"
   when: vagrant_daemon is not defined
 
 #- name: "Define slow_query_log_file."
@@ -27,23 +26,23 @@
 
 - name: "Define vagrant_log_error."
   set_fact:
-    vagrant_log_error: "{{ log_error }}"
+    vagrant_log_error: "{{ vagrant_role.log.error }}"
   when: vagrant_log_error is not defined
 
-- name: "Define Vagrant syslog tag: {{  }}"
+- name: "Define Vagrant syslog tag"
   set_fact:
-    vagrant_syslog_tag: "{{ __mysql_syslog_tag }}"
+    vagrant_syslog_tag: "{{ vagrant_role.syslog_tag }}"
   when: vagrant_syslog_tag is not defined
 
-- name: Define vagrant_pid_file.
+- name: "Define PID file."
   set_fact:
-    vagrant_pid_file: "{{ vagrant_pid_file }}"
-  when: pid_file is not defined
+    vagrant_role_pidfile: "{{ vagrant_role.pidfile }}"
+  when: vagrant_role_pidfile is not defined
 
 - name: "Define vagrant_config_file."
   set_fact:
-    vagrant_config_file: "{{ vagrant_config_file }}"
-  when: vagrant_config_file is not defined
+    vagrant_role_config_file: "{{ vagrant_role.config_file }}"
+  when: vagrant_role_config_file is not defined
 
 #- name: Define vagrant_config_include_dir.
 #  set_fact:

@@ -1,18 +1,21 @@
 galaxy_info:
   role_name: ansible_role_vagrant
-  version: '0.0.1'
+  version: '1.0.0'
   author: lordoftheflies
   description: 'Ansible Galaxy role for Vagrant installation.'
-  company: 'Cherubits LLC'
+  company: 'cherubits'
   issue_tracker_url: https://github.com/lordoftheflies/ansible-role-vagrant/issues
   license: license (Apache-2.0)
   min_ansible_version: 2.9
   platforms:
     - name: Ubuntu
       versions:
-        - all
+        - xenial
+        - eon
+        - disco
   galaxy_tags:
-    - development
+    - cherubits
     - virtualization
-    - mass
+    - development
+    - vagrant
 dependencies: []

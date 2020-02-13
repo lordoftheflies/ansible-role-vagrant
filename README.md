@@ -74,7 +74,7 @@ Specify virtualbox installation (For Debian)
 Fist, need to create a password file for encrypted values:
 
 ```bash
-ansible-vault create --ask-vault-password --prompt --name 'the_secret'  '.ansible.vault' 
+ansible-vault create --ask-vault-password --prompt --name 'the_secret' '.ansible.vault' 
 
 ```
 
@@ -84,4 +84,9 @@ Apache-2.0
 
 ## Author Information
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+* [László Hegedűs](mailto:laszlo.hegedus@cherubits.hu)
+
+## References:
+
+* [Install Vagrant](https://computingforgeeks.com/install-latest-vagrant-on-ubuntu-debian-kali-linux/)
+* [Vagrant with LibVirt](https://computingforgeeks.com/using-vagrant-with-libvirt-on-linux/)
