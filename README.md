@@ -85,3 +85,8 @@ Apache-2.0
 ## Author Information
 
 * [László Hegedűs](mailto:laszlo.hegedus@cherubits.hu)
+
+## References:
+
+* [Install Vagrant](https://computingforgeeks.com/install-latest-vagrant-on-ubuntu-debian-kali-linux/)
+* [Vagrant with LibVirt](https://computingforgeeks.com/using-vagrant-with-libvirt-on-linux/)

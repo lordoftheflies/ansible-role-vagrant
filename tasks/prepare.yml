@@ -1,5 +1,11 @@
 ---
 - name: "Show all the hosts in the inventory"
-  loop: "{{ groups['all'] }}"
+  loop: "{{ groups['vagrant_servers'] }}"
   debug:
     msg: "{{ item }}"
+
+- name: "Set boxes"
+  when: vagrant_role_vagrant_boxes not defined
+  set_fact: "vagrant_role_vagrant_boxes={{ vagrant_role.vagrant_boxes }}"
+
+- debug: var=vagrant_role_vagrant_boxes

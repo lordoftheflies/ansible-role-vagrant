@@ -89,7 +89,10 @@
 
 
 - name: "Install Vagrant boxes"
-  command: "vagrant box add generic/ubuntu1910 --provider=libvirt"
+  command: "vagrant box add {{ vagrant_box }} --provider=libvirt"
+  with_items: "{{ vagrant_role_vagrant_boxes }}"
+  loop_control:
+    loop_var: vagrant_box
 #
 #
 #- name: "Load vhost kernel module"
