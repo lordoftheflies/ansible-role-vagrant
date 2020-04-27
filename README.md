@@ -86,4 +86,5 @@ pass, fail, untested, unsupported
 
 ## License: [MIT](https://tldrlegal.com/license/mit-license)
 
-* vagrant generated using [ansible_collection_skeleton](https://github.com/<class 'jinja2.utils.Namespace'>/ansible_collection_skeleton)
+* vagrant generated using [ansible_collection_skeleton](https://github.com/<class 'jinja2.utils.Namespace'>/ansible_collection_skeleton)[![Ansible Role](https://img.shields.io/ansible/role/d/)](https://galaxy.ansible.com/lordoftheflies/ansible_role_vagrant)
+[![Ansible Role](https://img.shields.io/ansible/role/)](https://galaxy.ansible.com/lordoftheflies/ansible_role_vagrant)
