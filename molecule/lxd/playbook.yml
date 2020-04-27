@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    - vagrant_deployment_users_home: /root
+    - vagrant_testing_provider: lxd
+
+  roles:
+    - vagrant

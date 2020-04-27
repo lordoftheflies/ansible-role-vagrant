@@ -1,0 +1,237 @@
+---
+# roles/vagrant/defaults/main.yml
+
+vagrant_debug: false
+
+vagrant_controller_user: '{{ project_controller_user }}'
+vagrant_controller_home: '{{ project_controller_home }}'
+vagrant_controller_resources_root: '{{ project_controller_resources_home }}'
+
+vagrant_deployment_user: '{{ project_deployment_user }}'
+vagrant_deployment_home: '{{ project_deployment_home }}'
+vagrant_deployment_resources_root: '{{ project_deployment_resources_home }}'
+
+## atomic versioning example
+#
+# vagrant_major: '0'
+# vagrant_moderate_revision: '0'
+# vagrant_minor_revision: '1'
+# vagrant_build: ''
+
+## Package #
+
+vagrant_package_state: 'present'
+vagrant_package_version: '2.0.1'
+vagrant_package_filename: "vagrant_{{ vagrant_package_version }}_i686.deb"
+
+vagrant_controller_resources_dir: '{{ vagrant_controller_resources_root }}/sw/vagrant/debs'
+vagrant_deployment_resources_dir: '{{ vagrant_deployment_resources_root }}/vagrant/debs'
+
+# /tests/sw/{{ ansible_distribution| lower }}/{{ ansible_distribution_version }}/miniconda'
+
+# Help file
+
+vagrant_acemenu_help_file_template_path: '{{ fact_role_path }}/templates/bin/acemenu/help/example_aceadmin_helpfile.md.j2'
+
+# Resources
+
+vagrant_package_url: "https://releases.hashicorp.com/vagrant/2.0.1/vagrant_2.0.1_i686.deb"
+# vagrant_checksum_url: "https://releases.hashicorp.com/vagrant/2.0.1/ vagrant_2.0.1_SHA256SUMS"
+# vagrant_checksum_sig_url: "https://releases.hashicorp.com/vagrant/2.0.1/ vagrant_2.0.1_SHA256SUMS.sig"
+
+## links
+
+vagrant_default_link_force: true
+
+########################################
+
+# Resources
+
+vagrant_resources_on_local:
+
+  vagrant_local_directories:
+
+    state: 'directory'
+    path: '{{ vagrant_controller_resources_dir }}'
+    owner: '{{ vagrant_controller_user }}'
+    group: '{{ vagrant_controller_user }}'
+    mode: '0755'
+
+  vagrant_local_clones:
+
+    become: ''
+    repo: 'https://github.com/cjsteel/script-bash-acemenu.git'
+    dest: '{{ vagrant_controller_resources_dir }}/acemenu'
+    mode: '0700'
+    clone: true
+
+  vagrant_local_downloads:
+
+    url: 'https://repo.continuum.io/miniconda/Miniconda2-4.3.30-Linux-x86_64.sh'
+    dest: '{{ vagrant_controller_resources_dir }}/Miniconda2-latest-Linux-x86_64.sh'
+    owner: '{{ vagrant_controller_user }}'
+    group: '{{ vagrant_controller_user }}'
+    mode: '0700'
+    checksum: 'md5:bd1655b4b313f7b2a1f2e15b7b925d03'
+    resource_type: 'url'
+
+  vagrant_local_file_copies:
+
+    state: "copy"
+    src: './files/example_playbook.yml'
+    dest: '{{ vagrant_controller_resources_dir }}/copy_test.yml'
+    owner: '{{ vagrant_controller_user }}'
+    group: '{{ vagrant_controller_user }}'
+    mode: '0700'
+
+  vagrant_local_file_touches:
+
+    state: 'touch'
+    path: '{{ vagrant_controller_resources_dir }}/copy_test.yml'
+    owner: '{{ vagrant_controller_user }}'
+    group: '{{ vagrant_controller_user }}'
+    mode: '0770'
+
+  vagrant_local_templated_files:
+
+
+    state: 'template'
+    src: './templates/template_test.md.j2'
+    dest: '{{ vagrant_controller_resources_dir }}/test.md'
+    owner: '{{ vagrant_controller_user }}'
+    group: '{{ vagrant_controller_user }}'
+    mode: '0700'
+
+  vagrant_local_blocksinfile:
+
+    type: 'blockinfile'
+    path: '{{ vagrant_controller_resources_dir }}/test.md'
+    owner: '{{ vagrant_controller_user }}'
+    group: '{{ vagrant_controller_user }}'
+    mode: '0700'
+    insertafter: "EOF"
+    block: |
+      # if running bash
+      if [ -n "$BASH_VERSION" ]; then
+          # include /opt/display/bin/display if it exists
+          if [ -f "/opt/display/bin/display" ]; then
+              PATH="/opt/display/bin:$PATH"
+
+       	. "/opt/display/bin/"
+          fi
+      fi
+    state: "present"
+
+  vagrant_local_standard_sym_links:
+
+    state: "link"
+    src: '{{ vagrant_controller_resources_dir }}/test.md'
+    dest: '{{ vagrant_controller_resources_dir }}/my_local_link'
+    owner: '{{ vagrant_controller_user }}'
+    group: '{{ vagrant_controller_user }}'
+    mode: '0700'
+    force: '{{ vagrant_default_link_force }}'
+
+  vagrant_local_relative_sym_links:
+
+    link_name: 'relative_link'
+    link_target: 'test.md'
+    link_dir: '{{ vagrant_controller_resources_dir }}'
+    state: 'relative_link'
+#    owner: '{{ vagrant_controller_user }}'
+#    group: '{{ vagrant_controller_user }}'
+#    mode: '0700'
+
+vagrant_resources_on_remote:
+
+  vagrant_remote_directories:
+
+    state: 'directory'
+    path: '{{ vagrant_deployment_resources_dir }}'
+    owner: '{{ vagrant_deployment_user }}'
+    group: '{{ vagrant_deployment_user }}'
+    mode: '0755'
+
+  vagrant_remote_clones:
+
+    become: true
+    repo: 'https://github.com/cjsteel/script-bash-acemenu.git'
+    dest: '{{ vagrant_deployment_resources_dir }}/acemenu'
+    mode: '0700'
+    clone: true
+
+  vagrant_remote_downloads:
+
+    url: 'https://repo.continuum.io/miniconda/Miniconda2-4.3.30-Linux-x86_64.sh'
+    dest: '{{ vagrant_deployment_resources_dir }}/Miniconda2-latest-Linux-x86_64.sh'
+    owner: '{{ vagrant_deployment_user }}'
+    group: '{{ vagrant_deployment_user }}'
+    mode: '0700'
+    checksum: 'md5:bd1655b4b313f7b2a1f2e15b7b925d03'
+    resource_type: 'url'
+
+  vagrant_remote_file_copies:
+
+    state: "copy"
+    src: './files/example_playbook.yml'
+    dest: '{{ vagrant_deployment_resources_dir }}/copy_test.yml'
+    owner: '{{ vagrant_deployment_user }}'
+    group: '{{ vagrant_deployment_user }}'
+    mode: '0700'
+
+  vagrant_remote_file_touches:
+
+    state: 'touch'
+    path: '{{ vagrant_deployment_resources_dir }}/copy_test.yml'
+    owner: '{{ vagrant_deployment_user }}'
+    group: '{{ vagrant_deployment_user }}'
+    mode: '0770'
+
+  vagrant_remote_templates_files:
+
+    state: 'template'
+    src: './templates/template_test.md.j2'
+    dest: '{{ vagrant_deployment_resources_dir }}/test.md'
+    owner: '{{ vagrant_deployment_user }}'
+    group: '{{ vagrant_deployment_user }}'
+    mode: '0700'
+
+  vagrant_remote_blocksinfile:
+
+    type: 'blockinfile'
+    path: '{{ vagrant_deployment_resources_dir }}/test.md'
+    owner: '{{ vagrant_deployment_user }}'
+    group: '{{ vagrant_deployment_user }}'
+    mode: '0700'
+    insertafter: "EOF"
+    block: |
+      # if running bash
+      if [ -n "$BASH_VERSION" ]; then
+          # include /opt/display/bin/display if it exists
+          if [ -f "/opt/display/bin/display" ]; then
+              PATH="/opt/display/bin:$PATH"
+
+       	. "/opt/display/bin/"
+          fi
+      fi
+    state: "present"
+
+  vagrant_remote_standard_sym_links:
+
+    state: 'link'
+    src: '{{ vagrant_deployment_resources_dir }}/test.md'
+    dest: '{{ vagrant_deployment_resources_dir }}/my_remote_link'
+    owner: '{{ vagrant_deployment_user }}'
+    group: '{{ vagrant_deployment_user }}'
+    mode: '0700'
+    force: '{{ vagrant_default_link_force }}'
+
+  vagrant_remote_relative_sym_links:
+
+    state: 'relative_link'
+    link_dir: '{{ vagrant_deployment_resources_dir }}'
+    link_name: 'my_relative_link'
+    link_target: 'test.md'
+    owner: '{{ vagrant_deployment_user }}'
+    group: '{{ vagrant_deployment_user }}'
+    mode: '0700'

@@ -1,0 +1,5 @@
+---
+# roles/vagrant/vars/debian.yml
+
+# Debian specific vars
+vagrant_package_extension: 'deb'

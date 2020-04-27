@@ -1,0 +1,4 @@
+---
+# roles/vagrant/vars/debian.yml
+
+vagrant_package_extension: 'rpm'
